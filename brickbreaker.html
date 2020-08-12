@@ -56,6 +56,11 @@
                     boardX = boardX + (boardWidth / 2) * event.acceleration.x;
                 });
                 
+                window.addEventListener("orientationchange", function(event) {
+                    window.alert("the orientation of the device is now " + event.target.screen.orientation.angle);
+                });
+
+                
                 /*
                 window.onorientationchange = function(event) { 
                     window.alert("the orientation of the device is now " + event.target.screen.orientation.angle);
