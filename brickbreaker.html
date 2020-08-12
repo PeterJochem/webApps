@@ -56,6 +56,12 @@
                 
                 var isTouch = (('ontouchstart' in window)); // || (navigator.msMaxTouchPoints > 0));
                 
+                
+                window.addEventListener('touchstart', function() {
+                    // the user touched the screen 
+                    window.log("Touch!");
+                });
+                
                 document.addEventListener('keydown', (event) => {
                   const keyName = event.key;
                      
