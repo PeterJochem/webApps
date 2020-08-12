@@ -1,0 +1,261 @@
+
+<!DOCTYPE html>
+<html>
+    <html lang = "lang">
+     
+    <head>
+        <meta charset = "UTF-8">
+        
+        <link rel="stylesheet" href= "graphics.css">
+        <!-- cript src= "graphics.js" --><!-- /script -->
+        <title>
+             Breakout
+        </title>
+        
+        </head> 
+        
+        <body>        
+                <div id = "content">
+                    <h1 id = "banner" > BrickBreaker </h1>
+                    <canvas class = myCanvas width="320" height="240" >
+                        <p>This will show up if our browser does not support canvas tags </p>    
+                    </canvas>
+                </div>
+            
+            <script>
+                
+                // add globals here
+                var canvas = document.querySelector('.myCanvas');
+                var ctx = canvas.getContext('2d');
+                var width; 
+                var height; 
+                var score = 0;
+                var ballMovX;
+                var ballMovY;
+                var boardWidth;
+                var boardHeight;
+                var centerX;
+                var desiredY; 
+                var boardX; 
+                var boardY; 
+                var boardWidth;
+                var boardHeight;
+                var ballX;
+                var ballY; 
+                
+                var myRows;
+                
+                var numBricks_per_Row = 15;
+                var numRows = 5;
+                
+                init();
+                
+                window.setInterval(render, 10);
+                
+                window.addEventListener('devicemotion', function() {    
+                    alert(event.acceleration.x * 100);
+                });
+                
+                document.addEventListener('keydown', (event) => {
+                  const keyName = event.key;
+                     
+                  if (keyName == "ArrowLeft") {
+                    // change where the board is 
+                    boardX = boardX - (boardWidth / 2);
+                  }
+                  else if (keyName == "ArrowRight") {
+                      boardX = boardX + (boardWidth / 2);
+                  }
+                  else if (keyName == "ArrowUp") {
+                      // release the ball
+                      // ballMovX = 10;
+                      ballMovY = (window.height / 200);
+                  }
+              
+                }, false);
+                
+                
+                function init( ) {
+                        
+                    width = window.innerWidth * 0.97;
+                    canvas.width = window.innerWidth * 0.97;
+                    height = window.innerHeight * 0.80; 
+                    canvas.height = window.innerHeight * 0.80;    
+                    
+                    ctx = canvas.getContext('2d');
+            
+                    score = 0;
+                    ballMovX = 0;
+                    ballMovY = 0;
+                    
+                    boardWidth = 100;
+                    boardHeight = 10;
+                
+                    centerX = (canvas.width / 2) - (boardWidth / 2);
+                    desiredY = canvas.height - 20;
+                
+                    boardX = centerX; 
+                    boardY = canvas.height - 20;
+               
+                    boardWidth = 100;
+                    boardHeight = 10;
+                
+                    ballX = centerX + (boardWidth / 2);
+                    ballY = desiredY - 10;
+                    
+                    ctx.fillStyle = "black";
+                    ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);   
+                    
+                    myRows = []
+                    // Construct array of T/F for bricks
+                    for (i = 0; i < numRows; i++) {
+                        temp = []
+                        for (j = 0; j < numBricks_per_Row; ++j) {
+                            temp.push(true);
+                        }
+                        myRows.push(temp);
+                    }
+    
+                    render();
+                }
+                
+                /* render function
+                */
+                function render() {
+                   
+                    // cover up all the old stuff
+                    ctx.fillStyle = "black";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);  
+                   
+                    var currentX = 0;
+                    var currentY = canvas.height * 0.10;
+                    var squareX = canvas.width /  (myRows[0].length);
+                    var squareY = canvas.height / (10 * myRows.length);
+                    var incrementX = squareX + 1;
+                    var incrementY = squareY + 1;
+                
+                    // Color of each row
+                    var red = 'rgba(255, 0, 0, 0.7)';
+                    var orange = 'rgba(255, 100, 25, 0.9)';
+                    var yellow = 'rgba(255, 200, 2, 0.8)';
+                    var green = 'rgba(0, 255, 0, 0.4)';
+                    var blue = 'rgba(0, 0, 255, 0.8)';
+                    
+                    var rowColors = [red, orange, yellow, green, blue];
+                    var scoreIncrements = [500, 400, 300, 200, 100];
+                    
+                    var hasCollided = 0;
+                    var scoreIncrement = 0;
+                    for (var i = 0; i < myRows.length; ++i) {
+                        for (var j = 0; j < myRows[i].length; ++j) {
+                            
+                            // Set color based on row position
+                            ctx.fillStyle = rowColors[i];   
+                           
+                            if (myRows[i][j] == true) {
+                                // check if the ball has hit a collision with a brick
+                                if ( ( (ballX >= currentX) && (ballX <= (currentX + incrementX) ) ) ) {
+                                    if ( (ballY >= currentY) && (ballY <= (currentY + incrementY) ) ) {
+                                        ballMovY = -ballMovY;
+                                        
+                                        if (hasCollided == 0) {
+                                            myRows[i][j] = 0;
+                                            hasCollided = 1;
+                                            score = score + scoreIncrements[i];
+                                            document.getElementById("scoreTag").innerHTML = "Score: " + score;
+                                        }
+                                    }
+                                }
+                            }
+                             
+                            if (myRows[i][j] == true) {    
+                                ctx.fillRect(currentX, currentY, squareX, squareY);            
+                            }
+                            
+                            currentX = currentX + incrementX;   
+                        }
+                    
+                        currentX = 0;
+                        currentY = currentY + incrementY;
+                    }
+                
+                    // check for collisions with the board/paddle
+                    if ( (ballY >= boardY) ) {    
+                        if ( (ballX >= boardX) && (ballX <= boardX + boardWidth) ) {
+                            ballMovY = -ballMovY; 
+                            
+                            if ( (ballX >  (boardX + (boardWidth / 2) ) ) ) {
+                                 ballMovX = ballMovX + .5;   
+                            }
+                            else {
+                                ballMovX = -(ballMovX) - .5;
+                            }
+                        }
+                    }
+                    
+                    // check if the ball went out of bounds
+                    if (ballY <= 0 ) {
+                        ballMovY = -(ballMovY);
+                    }   
+                    if (ballX <= 0 || ballX >= canvas.width) {
+                        ballMovX = -ballMovX;
+                    }  
+                    
+                    // Check for player losing the game
+                    if (ballY > canvas.height) {    
+                        alert("You Lost");
+                        
+                        // re-set the board by calling init
+                        init();
+                        document.getElementById("scoreTag").innerHTML = "Score: " + score;
+                    }
+                    
+                    // update where the ball is
+                    ballX = ballX + ballMovX;
+                    ballY = ballY - ballMovY;
+                    
+                    // place the board
+                    boardWidth = 100;
+                    boardHeight = 10;
+                
+                    // check if the board has hit the edge
+                    if (boardX <= 0) {    
+                       boardX = 0; 
+                    }
+                    else if ( (boardX + (boardWidth) ) >= canvas.width ) {
+                        boardX = canvas.width - boardWidth;
+                    }
+                    
+                    var centerX = (canvas.width / 2) - (boardWidth / 2);
+                    var desiredY = canvas.height - 20;
+                
+                    // Draw the board/paddle
+                    ctx.fillStyle = 'rgba(0, 0, 0 0.8)';
+                    ctx.fillRect(boardX, boardY, boardWidth, boardHeight); 
+                
+                    // place the ball  
+                    ctx.strokeStyle = 'rgba(255, 255, 255, 1)';
+                    ctx.fillStyle = 'rgba(255, 255, 255, 1)';   
+                    // ctx.fillRect(ballX, ballY, boardWidth, boardHeight); 
+                    ctx.beginPath();
+                    ctx.arc(ballX,  ballY, 5, 0, Math.PI * 2, true);
+                    ctx.stroke();
+                    ctx.fill();
+                }
+                
+            </script>
+                
+            <h1 id = "firstHeader">
+                <p id = "scoreTag">
+                    Score: 0
+                </p>
+            </h1>
+            
+            <script>
+                document.write(Date());
+            </script>   
+                
+        </body>
+            
+            
+
