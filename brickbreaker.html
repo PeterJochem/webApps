@@ -62,10 +62,17 @@
                 });
                 */
                 
+                /*
                 window.onorientationchange = function(event) { 
                     window.alert("the orientation of the device is now " + event.target.screen.orientation.angle);
                 };
+                */
                 
+                function handleOrientation() {
+                    window.alert("the orientation of the device is now " + event.target.screen.orientation.angle);
+                }
+                
+                window.addEventListener("deviceorientation", handleOrientation, true);
 
                 
                 /*
