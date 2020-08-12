@@ -51,8 +51,16 @@
                 window.setInterval(render, 10);
                 
                 window.addEventListener('devicemotion', function() {    
-                    alert(event.acceleration.x * 100);
+                    // alert(event.acceleration.x * 100);
+                    ballMovX = ballMovX + (event.acceleration.x * 100);
+                    boardX = boardX + (boardWidth / 2);
                 });
+                
+                /*
+                window.onorientationchange = function(event) { 
+                    window.alert("the orientation of the device is now " + event.target.screen.orientation.angle);
+                };
+                */
                 
                 var isTouch = (('ontouchstart' in window)); // || (navigator.msMaxTouchPoints > 0));
                 
