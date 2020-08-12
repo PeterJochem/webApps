@@ -52,8 +52,8 @@
                 
                 window.addEventListener('devicemotion', function() {    
                     // alert(event.acceleration.x * 100);
-                    ballMovX = ballMovX + (event.acceleration.x * 5);
-                    boardX = boardX + (boardWidth / 2);
+                    // ballMovX = ballMovX + (event.acceleration.x * 5);
+                    boardX = boardX + (boardWidth / 2) * event.acceleration.x;
                 });
                 
                 /*
