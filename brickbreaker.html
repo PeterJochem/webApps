@@ -42,9 +42,7 @@
                 var boardHeight;
                 var ballX;
                 var ballY; 
-                
                 var myRows;
-                
                 var numBricks_per_Row = 15;
                 var numRows = 5;
                 
@@ -55,6 +53,8 @@
                 window.addEventListener('devicemotion', function() {    
                     alert(event.acceleration.x * 100);
                 });
+                
+                var isTouch = (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
                 
                 document.addEventListener('keydown', (event) => {
                   const keyName = event.key;
@@ -117,6 +117,11 @@
                     }
     
                     render();
+                    
+                    if (isTouch) {
+                        ballMovY = (window.height / 200);  
+                    }
+                
                 }
                 
                 /* render function
