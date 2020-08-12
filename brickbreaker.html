@@ -54,7 +54,7 @@
                     alert(event.acceleration.x * 100);
                 });
                 
-                var isTouch = (('ontouchstart' in window) || (navigator.msMaxTouchPoints > 0));
+                var isTouch = (('ontouchstart' in window)); // || (navigator.msMaxTouchPoints > 0));
                 
                 document.addEventListener('keydown', (event) => {
                   const keyName = event.key;
@@ -119,7 +119,11 @@
                     render();
                     
                     if (isTouch) {
-                        ballMovY = (window.height / 200);  
+                        ballMovY = (window.height / 200);
+                        window.alert("No touch screen detected");
+                    }
+                    else {
+                        window.alert("Touch screen detected");
                     }
                 
                 }
